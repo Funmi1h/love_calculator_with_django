@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+        
+    <form action="" method="post" id="loveForm">
+        {% csrf_token %}
+
+        {{ form.name1 }}
+        {{ form.name2 }}
+        
+        <button type="submit" id="submit"> Éros, dis-nous tout 🏹💘✨ </button>
+    </form>
+
+    <div id="result" style="display: none;"></div>
+
+
+
+
+    <script>
+
+        function interpreteScore(score){
+            if (score > 90){
+                return '💘 Âmes sœurs ! Une connexion rare.'
+            } else if (score > 75){
+                return "💖 Très bonne compatibilité, beaucoup d’amour en vue !"
+            } else if(score > 50){
+                return "💞 Bon match, ça peut fonctionner avec un peu d’effort."
+            }   else if(score > 30) {
+                return "💔 Des hauts et des bas, mais tout est possible."
+            }   else if(score > 10){
+                return "⚠️ Très peu compatibles… mais qui sait ?"
+            } else{
+                return "❌ Mieux vaut rester amis."
+            }
+
+        }
+        // quand le js envoie le formulaire la vue envoie une réponse json que le js récupere avec fetch etconvertit en objet js 
+        loveForm = document.getElementById('loveForm')
+        btnSubmit = document.getElementById('submit')
+        
+        btnSubmit.addEventListener('click', function(){
+            event.preventDefault() // POur que la page ne se recharge pas quand le formulaire est soumis 
+            let formData = new FormData(loveForm)
+            fetch('', {
+                method : 'post',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': loveForm.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body : formData // un objet javascript qui contient tous les donnés du formulaire
+            })
+
+            .then(response => response.json()) // Convertit la réponse qui est au format json en objet js
+            
+            .then(data => {
+            if (data.percentage !== undefined){
+                resultat = document.getElementById('result') 
+                resultat.style.display = 'block'
+                resultat.textContent = "Votre amour brille à " + data.percentage + "%" + interpreteScore(data.percentage)
+                
+            }
+
+        })
+        })
+      
+    </script>
+</body>
+</html>
