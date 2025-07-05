@@ -12,9 +12,12 @@ def calculate_love(request):
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'percentage': percentage})
             return render(request, 'love/love.html', {'form': form, 'percentage': percentage})
+        # si le formulaire envoyé n'est pas valide 
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'error': 'Formulaire invalide'}, status=400)
+    
+    #Si la requete n'est pas post
     else:
         form = LoveForm()
         return render(request, 'love/love.html', {'form': form})
